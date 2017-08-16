@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Photo Library</string>
+    <string name="login.message.signin">Sign In</string>
+    <string name="login.email.hint">Email</string>
+    <string name="login.password.hint">Password</string>
+    <string name="login.message.signup">Register</string>
+</resources>
