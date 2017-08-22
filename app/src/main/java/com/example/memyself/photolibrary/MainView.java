@@ -5,4 +5,7 @@ package com.example.memyself.photolibrary;
  */
 
 public interface MainView {
+    void onUploadInit();
+    void onUploadComplete();
+    void onUploadError(String error);
 }

@@ -14,4 +14,6 @@ public interface LoginView {
     void setUserEmail(String email);
     void loginError(String error);
     void newUserError(String error);
+    void handlesSignUp();
+    void handlesSignIn();
 }
