@@ -14,6 +14,7 @@ import android.widget.RelativeLayout;
 
 import com.example.memyself.photolibrary.MainActivity;
 import com.example.memyself.photolibrary.R;
+import com.google.firebase.FirebaseApp;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -45,6 +46,7 @@ public class LoginActivity extends AppCompatActivity implements LoginView{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
+        FirebaseApp.initializeApp(this);
         prefs = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
 
         EventBus eventBus = new EventBus();
@@ -81,7 +83,7 @@ public class LoginActivity extends AppCompatActivity implements LoginView{
     }
 
     @Override
-    @OnClick()
+    @OnClick(R.id.btnSignIn)
     public void handlesSignIn() {
         presenter.login(inputEmail.getText().toString(), inputPassword.getText().toString());
     }

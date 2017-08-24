@@ -163,17 +163,17 @@ public class MainActivity extends AppCompatActivity
         Intent photoIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         photoIntent.putExtra("return-data", true);
 
-        File photoFile = null;
-        try {
-            photoFile = createFile();
-        } catch (IOException e) {
-            Snackbar.make(drawer, R.string.main_error_dispatch_camera, Snackbar.LENGTH_SHORT).show();
-        }
+        if (photoIntent.resolveActivity(getPackageManager()) != null) {
+            File photoFile = null;
+            try {
+                photoFile = createFile();
+            } catch (IOException e) {
+                Snackbar.make(drawer, R.string.main_error_dispatch_camera, Snackbar.LENGTH_SHORT).show();
+            }
 
-        if (photoFile != null) {
-            Uri photoURI = FileProvider.getUriForFile(this, "com.example.android.fileprovider", photoFile);
-            photoIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-            if (photoIntent.resolveActivity(getPackageManager()) != null) {
+            if (photoFile != null) {
+                Uri photoURI = FileProvider.getUriForFile(this, "com.example.android.fileprovider", photoFile);
+                photoIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                 startActivityForResult(photoIntent, REQUEST_PICTURE);
             }
         }
