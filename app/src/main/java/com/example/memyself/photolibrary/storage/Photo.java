@@ -1,10 +1,12 @@
 package com.example.memyself.photolibrary.storage;
 
+import io.realm.RealmObject;
+
 /**
  * Created by MeMyself on 8/22/2017.
  */
 
-public class Photo {
+public class Photo extends RealmObject{
     private String id;
     private String url;
 

@@ -11,6 +11,8 @@ import java.io.File;
 import java.security.SecureRandom;
 import java.util.Locale;
 
+import io.realm.Realm;
+
 /**
  * Created by MeMyself on 8/22/2017.
  */
@@ -56,6 +58,9 @@ public class MainModelImpl implements MainModel {
             @Override
             public void onSuccess() {
                 photo.setUrl(storage.getImageUrl(photo.getId()));
+                Realm realm = Realm.getDefaultInstance();
+                Photo realmPhoto = realm.copyToRealm(photo);
+                realm.commitTransaction();
             }
 
             @Override
