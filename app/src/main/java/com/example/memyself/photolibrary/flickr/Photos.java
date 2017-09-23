@@ -14,5 +14,5 @@ public class Photos {
     int pages;
     int perPage;
     long total;
-    List<Photo> photo = new ArrayList<>();
+    public List<Photo> photoList = new ArrayList<>();
 }

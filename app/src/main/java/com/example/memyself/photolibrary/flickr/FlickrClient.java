@@ -21,7 +21,7 @@ public class FlickrClient {
     private static final String API_KEY = "YOUR_API_KEY_GOES_HERE";
     private Retrofit retrofit;
 
-    FlickrClient() {
+    public FlickrClient() {
         OkHttpClient.Builder client = new OkHttpClient.Builder();
         client.addInterceptor(new Interceptor() {
 
@@ -45,8 +45,8 @@ public class FlickrClient {
                 .build();
     }
 
-//    FlickrService getFlickrService() {
-//        return retrofit.create(FlickrService.class);
-//    }
+    public FlickrService getFlickrService() {
+        return retrofit.create(FlickrService.class);
+    }
 
 }

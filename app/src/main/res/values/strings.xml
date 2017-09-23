@@ -16,4 +16,7 @@
     <string name="main_error_dispatch_camera">Error creating file!</string>
     <string name="main_notice_upload_init">photo uploading...</string>
     <string name="main_notice_upload_complete">upload completed</string>
+    <string name="search_instruction">Enter tags seperated with commas to search:</string>
+    <string name="tags.search.hint">Tags to search</string>
+    <string name="search_button">search</string>
 </resources>
