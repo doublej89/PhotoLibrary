@@ -1,5 +1,9 @@
 package com.example.memyself.photolibrary.flickr;
 
+import android.util.Log;
+
+import com.example.memyself.photolibrary.BuildConfig;
+
 import java.io.IOException;
 
 import okhttp3.HttpUrl;
@@ -18,7 +22,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class FlickrClient {
     private static final String FLICKR_API_BASE_URL = "https://api.flickr.com";
-    private static final String API_KEY = "YOUR_API_KEY_GOES_HERE";
+    private static final String API_KEY = BuildConfig.FLICKR_API_KEY;
     private Retrofit retrofit;
 
     public FlickrClient() {
@@ -32,6 +36,9 @@ public class FlickrClient {
                 urlBuilder.addQueryParameter("api_key", API_KEY);
                 urlBuilder.addQueryParameter("format", "json");
                 urlBuilder.addQueryParameter("nojsoncallback", "1");
+
+                HttpUrl url = urlBuilder.build();
+                Log.d("FlickrApi Url", "url: " + url.toString());
 
                 request = request.newBuilder().url(urlBuilder.build()).build();
                 return chain.proceed(request);

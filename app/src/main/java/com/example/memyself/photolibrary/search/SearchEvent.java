@@ -1,6 +1,7 @@
 package com.example.memyself.photolibrary.search;
 
-import com.example.memyself.photolibrary.storage.Photo;
+import com.example.memyself.photolibrary.flickr.Photo;
+import com.example.memyself.photolibrary.storage.DbPhoto;
 
 import java.util.List;
 
@@ -20,8 +21,8 @@ public class SearchEvent {
         return photoList;
     }
 
-    public void setPhotoList(List<Photo> photoList) {
-        this.photoList = photoList;
+    public void setPhotoList(List<Photo> dbPhotoList) {
+        this.photoList = dbPhotoList;
     }
 
 

@@ -2,13 +2,15 @@ package com.example.memyself.photolibrary.storage;
 
 import android.text.TextUtils;
 
+import com.example.memyself.photolibrary.flickr.Photo;
+
 import io.realm.RealmObject;
 
 /**
  * Created by MeMyself on 8/22/2017.
  */
 
-public class Photo extends RealmObject{
+public class DbPhoto extends RealmObject{
     private String id;
 
     private String url;
@@ -18,14 +20,20 @@ public class Photo extends RealmObject{
     public String secret;
     public int farm;
 
-    public String getId() {
-        return id;
+    public DbPhoto() {
+
     }
 
-    public String getUrl() {
-        if (!TextUtils.isEmpty(server) && !TextUtils.isEmpty(secret))
-            getFlickrUrl();
-        return url;
+    public DbPhoto(Photo photo) {
+        this.id = photo.getId();
+        this.title = photo.getTitle();
+        this.server = photo.getServer();
+        this.secret = photo.getSecret();
+        this.farm = photo.getFarm();
+    }
+
+    public String getId() {
+        return id;
     }
 
     public void setId(String id) {

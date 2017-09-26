@@ -1,12 +1,11 @@
 package com.example.memyself.photolibrary.search;
 
-import android.widget.Toast;
-
 import com.example.memyself.photolibrary.flickr.FlickrClient;
 import com.example.memyself.photolibrary.flickr.FlickrService;
+import com.example.memyself.photolibrary.flickr.Photo;
 import com.example.memyself.photolibrary.flickr.Photos;
 import com.example.memyself.photolibrary.flickr.PhotosResponse;
-import com.example.memyself.photolibrary.storage.Photo;
+import com.example.memyself.photolibrary.storage.DbPhoto;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -44,9 +43,11 @@ public class SearchResultmodelimpl implements SearchResultModel {
             public void onResponse(Call<PhotosResponse> call, Response<PhotosResponse> response) {
                 if (response.isSuccessful()) {
                     PhotosResponse photosResponse = response.body();
-                    Photos photos = photosResponse.photos;
+                    if (photosResponse != null) {
+                        Photos photos = photosResponse.getPhotos();
 
-                    post(SearchEvent.READ_EVENT, photos.photoList);
+                        post(SearchEvent.READ_EVENT, photos.getPhoto());
+                    }
                 } else {
                     post(SearchEvent.ERROR_EVENT, null);
                 }
@@ -61,8 +62,9 @@ public class SearchResultmodelimpl implements SearchResultModel {
 
     @Override
     public void save(Photo photo) {
+        DbPhoto dbPhoto = new DbPhoto(photo);
         Realm realm = Realm.getDefaultInstance();
-        Photo realmPhoto = realm.copyToRealm(photo);
+        DbPhoto realmDbPhoto = realm.copyToRealm(dbPhoto);
         realm.commitTransaction();
     }
 

@@ -1,6 +1,6 @@
 package com.example.memyself.photolibrary;
 
-import com.example.memyself.photolibrary.storage.Photo;
+import com.example.memyself.photolibrary.storage.DbPhoto;
 import com.example.memyself.photolibrary.storage.PhotoStorage;
 import com.example.memyself.photolibrary.storage.PhotoStorageListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -50,16 +50,16 @@ public class MainModelImpl implements MainModel {
     @Override
     public void uploadPhoto(String path) {
         String id = nextString();
-        final Photo photo = new Photo();
-        photo.setId(id);
+        final DbPhoto dbPhoto = new DbPhoto();
+        dbPhoto.setId(id);
 
         post(MainEvent.UPLOAD_INIT);
-        storage.upload(new File(path), photo.getId(), new PhotoStorageListener() {
+        storage.upload(new File(path), dbPhoto.getId(), new PhotoStorageListener() {
             @Override
             public void onSuccess() {
-                photo.setUrl(storage.getImageUrl(photo.getId()));
+                dbPhoto.setUrl(storage.getImageUrl(dbPhoto.getId()));
                 Realm realm = Realm.getDefaultInstance();
-                Photo realmPhoto = realm.copyToRealm(photo);
+                DbPhoto realmDbPhoto = realm.copyToRealm(dbPhoto);
                 realm.commitTransaction();
             }
 

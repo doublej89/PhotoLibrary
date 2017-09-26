@@ -18,7 +18,8 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.example.memyself.photolibrary.R;
-import com.example.memyself.photolibrary.storage.Photo;
+import com.example.memyself.photolibrary.flickr.Photo;
+import com.example.memyself.photolibrary.storage.DbPhoto;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -58,8 +59,10 @@ public class SearchResultActivity extends AppCompatActivity implements SearchRes
         presenter = new SearchResultPresenterImpl(eventBus, this, new SearchResultmodelimpl(eventBus));
         presenter.onCreate();
         presenter.doSearch(tags);
+        //Log.d("List of Photos", "list: " + dbPhotoList.toString());
         if (photoList != null)
             loadPhoto(photoList.get(selectedIndex).getFlickrUrl());
+        setImageViewListener();
     }
 
     @Override
@@ -118,7 +121,7 @@ public class SearchResultActivity extends AppCompatActivity implements SearchRes
                     @Override
                     public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
                         progressBar.setVisibility(View.GONE);
-                        titleTextView.setText("Title: " + photoList.get(selectedIndex).title);
+                        titleTextView.setText("Title: " + photoList.get(selectedIndex).getTitle());
                         return false;
                     }
                 })

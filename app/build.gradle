@@ -21,12 +21,14 @@ android {
             resValue "string", "CLOUD_NAME", project.property('CLOUD_NAME')
             resValue "string", "CLOUD_API_KEY", project.property('CLOUD_API_KEY')
             resValue "string", "CLOUD_API_SECRET", project.property('CLOUD_API_SECRET')
+            it.buildConfigField 'String', 'FLICKR_API_KEY', FLICKR_API_KEY
         }
 
         debug {
             resValue "string", "CLOUD_NAME", project.property('CLOUD_NAME')
             resValue "string", "CLOUD_API_KEY", project.property('CLOUD_API_KEY')
             resValue "string", "CLOUD_API_SECRET", project.property('CLOUD_API_SECRET')
+            it.buildConfigField 'String', 'FLICKR_API_KEY', FLICKR_API_KEY
             ext.alwaysUpdateBuildId = false
         }
     }

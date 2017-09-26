@@ -134,6 +134,8 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_main_screen) {
 
         } else if (id == R.id.nav_inspect_photos) {
+            Intent intent = new Intent(this, SearchActivity.class);
+            startActivity(intent);
 
         } else if (id == R.id.nav_share) {
 

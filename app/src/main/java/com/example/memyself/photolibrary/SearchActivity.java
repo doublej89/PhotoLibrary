@@ -25,7 +25,7 @@ public class SearchActivity extends AppCompatActivity {
         ButterKnife.bind(this);
     }
 
-    @OnClick(R.id.search_button)
+    @OnClick(R.id.search_btn)
     public void goToSearch() {
         Intent intent = new Intent(this, SearchResultActivity.class);
         intent.putExtra(TAGS_EXTRA, searchEditText.getText().toString());
