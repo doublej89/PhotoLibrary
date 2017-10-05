@@ -32,6 +32,12 @@ public class DbPhoto extends RealmObject{
         this.farm = photo.getFarm();
     }
 
+    public String getUrl() {
+        if (server != null || secret != null)
+            return getFlickrUrl();
+        return url;
+    }
+
     public String getId() {
         return id;
     }

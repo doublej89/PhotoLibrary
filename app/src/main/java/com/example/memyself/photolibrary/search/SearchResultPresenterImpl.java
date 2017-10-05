@@ -45,12 +45,12 @@ public class SearchResultPresenterImpl implements SearchResultPresenter {
     @Override
     @Subscribe
     public void onEventMainThread(SearchEvent event) {
-        if (view != null) {
-            view.hideProgress();
-            if (event.getType() == SearchEvent.READ_EVENT)
-                view.setList(event.getPhotoList());
-            else if (event.getType() == SearchEvent.ERROR_EVENT)
-                view.showError();
+        view.hideProgress();
+        if (event.getType() == SearchEvent.READ_EVENT) {
+            view.setList(event.getPhotoList());
+            view.loadPhoto(event.getPhotoList().get(view.getSelectedIndex()).getFlickrUrl());
         }
+        else if (event.getType() == SearchEvent.ERROR_EVENT)
+            view.showError();
     }
 }

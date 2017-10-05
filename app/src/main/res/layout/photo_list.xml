@@ -9,5 +9,6 @@
     android:layout_marginLeft="16dp"
     android:layout_marginRight="16dp"
     app:layoutManager="LinearLayoutManager"
-    tools:context="com.example.memyself.photolibrary.gallery.PhotoListActivity"
+    tools:context="com.example.memyself.photolibrary.MainActivity"
+    tools:showIn="@layout/app_bar_main"
     tools:listitem="@layout/photo_list_content" />

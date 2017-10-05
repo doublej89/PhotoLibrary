@@ -1,6 +1,7 @@
 package com.example.memyself.photolibrary;
 
 import android.*;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -14,6 +15,9 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -23,8 +27,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.example.memyself.photolibrary.gallery.PhotoDetailActivity;
+import com.example.memyself.photolibrary.gallery.PhotoDetailFragment;
+import com.example.memyself.photolibrary.gallery.PhotoListActivity;
+import com.example.memyself.photolibrary.gallery.dummy.DummyContent;
 import com.example.memyself.photolibrary.login.LoginActivity;
+import com.example.memyself.photolibrary.storage.DbPhoto;
 import com.example.memyself.photolibrary.storage.PhotoStorage;
 
 import org.greenrobot.eventbus.EventBus;
@@ -33,10 +46,14 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.realm.Realm;
+import io.realm.RealmQuery;
+import io.realm.RealmResults;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, MainView {
@@ -45,6 +62,9 @@ public class MainActivity extends AppCompatActivity
     private String photoPath;
     private MainPresenter presenter;
     private SharedPreferences sharedPreferences;
+    private RealmResults<DbPhoto> photos;
+
+    private boolean mTwoPane;
 
     @BindView(R.id.drawer_layout)
     DrawerLayout drawer;
@@ -56,6 +76,12 @@ public class MainActivity extends AppCompatActivity
         ButterKnife.bind(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        Realm realm = Realm.getDefaultInstance();
+
+        RealmQuery<DbPhoto> query = realm.where(DbPhoto.class);
+        photos = query.findAll();
+
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -80,6 +106,24 @@ public class MainActivity extends AppCompatActivity
         MainModel model = new MainModelImpl(eventBus, storage);
         presenter = new MainPresenterImpl(this, eventBus, model);
         sharedPreferences = getSharedPreferences(LoginActivity.PREF_NAME, MODE_PRIVATE);
+
+        View recyclerView = findViewById(R.id.photo_list);
+        assert recyclerView != null;
+        int numberOfColumns = 3;
+        ((RecyclerView) recyclerView).setLayoutManager(new GridLayoutManager(this, numberOfColumns));
+        setupRecyclerView((RecyclerView) recyclerView);
+
+        if (findViewById(R.id.photo_detail_container) != null) {
+            // The detail container view will be present only in the
+            // large-screen layouts (res/values-w900dp).
+            // If this view is present, then the
+            // activity should be in two-pane mode.
+            mTwoPane = true;
+        }
+    }
+
+    private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
+        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(photos));
     }
 
     @Override
@@ -132,7 +176,8 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_gallery) {
 
         } else if (id == R.id.nav_main_screen) {
-
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
         } else if (id == R.id.nav_inspect_photos) {
             Intent intent = new Intent(this, SearchActivity.class);
             startActivity(intent);
@@ -220,5 +265,70 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onUploadError(String error) {
         Snackbar.make(drawer, error, Snackbar.LENGTH_SHORT).show();
+    }
+
+    public class SimpleItemRecyclerViewAdapter
+            extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder> {
+
+        private final RealmResults<DbPhoto> mValues;
+
+        public SimpleItemRecyclerViewAdapter(RealmResults<DbPhoto> items) {
+            mValues = items;
+        }
+
+        @Override
+        public SimpleItemRecyclerViewAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.photo_list_content, parent, false);
+            return new SimpleItemRecyclerViewAdapter.ViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(final SimpleItemRecyclerViewAdapter.ViewHolder holder, int position) {
+            holder.dbPhoto = mValues.get(position);
+            Glide.with(holder.imageView.getContext())
+                    .load(holder.dbPhoto.getUrl())
+                    .into(holder.imageView);
+
+
+            holder.mView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mTwoPane) {
+                        Bundle arguments = new Bundle();
+                        arguments.putString(PhotoDetailFragment.ARG_ITEM_ID, holder.dbPhoto.getUrl());
+                        PhotoDetailFragment fragment = new PhotoDetailFragment();
+                        fragment.setArguments(arguments);
+                        getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.photo_detail_container, fragment)
+                                .commit();
+                    } else {
+                        Context context = v.getContext();
+                        Intent intent = new Intent(context, PhotoDetailActivity.class);
+                        intent.putExtra(PhotoDetailFragment.ARG_ITEM_ID, holder.dbPhoto.getUrl());
+
+                        context.startActivity(intent);
+                    }
+                }
+            });
+        }
+
+        @Override
+        public int getItemCount() {
+            return mValues.size();
+        }
+
+        public class ViewHolder extends RecyclerView.ViewHolder {
+            public final View mView;
+            public ImageView imageView;
+            public DbPhoto dbPhoto;
+
+            public ViewHolder(View view) {
+                super(view);
+                mView = view;
+                imageView = (ImageView) itemView.findViewById(R.id.imgThumb);
+            }
+
+        }
     }
 }

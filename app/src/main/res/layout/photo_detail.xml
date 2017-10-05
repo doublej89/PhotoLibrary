@@ -1,9 +1,7 @@
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/photo_detail"
-    style="?android:attr/textAppearanceLarge"
+<ImageView android:id="@+id/displayImage"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="16dp"
-    android:textIsSelectable="true"
-    tools:context="com.example.memyself.photolibrary.gallery.PhotoDetailFragment" />
+    android:layout_height="350dp"
+    android:layout_centerInParent="true"
+    android:adjustViewBounds="true"
+    android:scaleType="centerCrop"
+    xmlns:android="http://schemas.android.com/apk/res/android" />

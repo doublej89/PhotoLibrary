@@ -17,4 +17,5 @@ public interface SearchResultView {
     void setList(List<Photo> photos);
     void showError();
     void showServerError();
+    int getSelectedIndex();
 }

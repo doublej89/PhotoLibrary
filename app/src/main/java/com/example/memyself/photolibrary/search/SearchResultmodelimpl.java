@@ -1,5 +1,7 @@
 package com.example.memyself.photolibrary.search;
 
+import android.util.Log;
+
 import com.example.memyself.photolibrary.flickr.FlickrClient;
 import com.example.memyself.photolibrary.flickr.FlickrService;
 import com.example.memyself.photolibrary.flickr.Photo;
@@ -44,6 +46,7 @@ public class SearchResultmodelimpl implements SearchResultModel {
                 if (response.isSuccessful()) {
                     PhotosResponse photosResponse = response.body();
                     if (photosResponse != null) {
+                        Log.d("Flickr Response", photosResponse.getPhotos().toString());
                         Photos photos = photosResponse.getPhotos();
 
                         post(SearchEvent.READ_EVENT, photos.getPhoto());
@@ -64,6 +67,7 @@ public class SearchResultmodelimpl implements SearchResultModel {
     public void save(Photo photo) {
         DbPhoto dbPhoto = new DbPhoto(photo);
         Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
         DbPhoto realmDbPhoto = realm.copyToRealm(dbPhoto);
         realm.commitTransaction();
     }

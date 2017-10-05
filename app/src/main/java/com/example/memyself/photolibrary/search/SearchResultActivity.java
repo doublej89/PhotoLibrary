@@ -60,9 +60,14 @@ public class SearchResultActivity extends AppCompatActivity implements SearchRes
         presenter.onCreate();
         presenter.doSearch(tags);
         //Log.d("List of Photos", "list: " + dbPhotoList.toString());
-        if (photoList != null)
-            loadPhoto(photoList.get(selectedIndex).getFlickrUrl());
+//        if (photoList != null)
+//            loadPhoto(photoList.get(selectedIndex).getFlickrUrl());
         setImageViewListener();
+    }
+
+    @Override
+    public int getSelectedIndex() {
+        return this.selectedIndex;
     }
 
     @Override

@@ -59,6 +59,7 @@ public class MainModelImpl implements MainModel {
             public void onSuccess() {
                 dbPhoto.setUrl(storage.getImageUrl(dbPhoto.getId()));
                 Realm realm = Realm.getDefaultInstance();
+                realm.beginTransaction();
                 DbPhoto realmDbPhoto = realm.copyToRealm(dbPhoto);
                 realm.commitTransaction();
             }

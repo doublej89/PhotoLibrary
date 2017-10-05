@@ -43,7 +43,20 @@
         </provider>
 
         <activity android:name=".SearchActivity" />
-        <activity android:name=".search.SearchResultActivity"></activity>
+        <activity android:name=".search.SearchResultActivity" />
+        <activity
+            android:name=".gallery.PhotoListActivity"
+            android:label="@string/title_photo_list"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".gallery.PhotoDetailActivity"
+            android:label="@string/title_photo_detail"
+            android:parentActivityName=".gallery.PhotoListActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.memyself.photolibrary.gallery.PhotoListActivity" />
+        </activity>
     </application>
 
 </manifest>

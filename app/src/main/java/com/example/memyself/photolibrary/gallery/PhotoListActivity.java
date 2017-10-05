@@ -12,13 +12,21 @@ import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.example.memyself.photolibrary.MainActivity;
 import com.example.memyself.photolibrary.R;
 
 import com.example.memyself.photolibrary.gallery.dummy.DummyContent;
+import com.example.memyself.photolibrary.storage.DbPhoto;
 
 import java.util.List;
+
+import io.realm.Realm;
+import io.realm.RealmQuery;
+import io.realm.RealmResults;
 
 /**
  * An activity representing a list of Photos. This activity
@@ -35,6 +43,7 @@ public class PhotoListActivity extends AppCompatActivity {
      * device.
      */
     private boolean mTwoPane;
+    private RealmResults<DbPhoto> photos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +53,11 @@ public class PhotoListActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setTitle(getTitle());
+
+        Realm realm = Realm.getDefaultInstance();
+
+        RealmQuery<DbPhoto> query = realm.where(DbPhoto.class);
+        photos = query.findAll();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -68,37 +82,39 @@ public class PhotoListActivity extends AppCompatActivity {
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
-        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(DummyContent.ITEMS));
+        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(photos));
     }
 
     public class SimpleItemRecyclerViewAdapter
             extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder> {
 
-        private final List<DummyContent.DummyItem> mValues;
+        private final RealmResults<DbPhoto> mValues;
 
-        public SimpleItemRecyclerViewAdapter(List<DummyContent.DummyItem> items) {
+        public SimpleItemRecyclerViewAdapter(RealmResults<DbPhoto> items) {
             mValues = items;
         }
 
         @Override
-        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public SimpleItemRecyclerViewAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.photo_list_content, parent, false);
-            return new ViewHolder(view);
+            return new SimpleItemRecyclerViewAdapter.ViewHolder(view);
         }
 
         @Override
-        public void onBindViewHolder(final ViewHolder holder, int position) {
-            holder.mItem = mValues.get(position);
-            holder.mIdView.setText(mValues.get(position).id);
-            holder.mContentView.setText(mValues.get(position).content);
+        public void onBindViewHolder(final SimpleItemRecyclerViewAdapter.ViewHolder holder, int position) {
+            holder.dbPhoto = mValues.get(position);
+            Glide.with(holder.imageView.getContext())
+                    .load(holder.dbPhoto.getUrl())
+                    .into(holder.imageView);
+
 
             holder.mView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (mTwoPane) {
                         Bundle arguments = new Bundle();
-                        arguments.putString(PhotoDetailFragment.ARG_ITEM_ID, holder.mItem.id);
+                        arguments.putString(PhotoDetailFragment.ARG_ITEM_ID, holder.dbPhoto.getUrl());
                         PhotoDetailFragment fragment = new PhotoDetailFragment();
                         fragment.setArguments(arguments);
                         getSupportFragmentManager().beginTransaction()
@@ -107,7 +123,7 @@ public class PhotoListActivity extends AppCompatActivity {
                     } else {
                         Context context = v.getContext();
                         Intent intent = new Intent(context, PhotoDetailActivity.class);
-                        intent.putExtra(PhotoDetailFragment.ARG_ITEM_ID, holder.mItem.id);
+                        intent.putExtra(PhotoDetailFragment.ARG_ITEM_ID, holder.dbPhoto.getUrl());
 
                         context.startActivity(intent);
                     }
@@ -122,21 +138,15 @@ public class PhotoListActivity extends AppCompatActivity {
 
         public class ViewHolder extends RecyclerView.ViewHolder {
             public final View mView;
-            public final TextView mIdView;
-            public final TextView mContentView;
-            public DummyContent.DummyItem mItem;
+            public ImageView imageView;
+            public DbPhoto dbPhoto;
 
             public ViewHolder(View view) {
                 super(view);
                 mView = view;
-                mIdView = (TextView) view.findViewById(R.id.id);
-                mContentView = (TextView) view.findViewById(R.id.content);
+                imageView = (ImageView) itemView.findViewById(R.id.imgThumb);
             }
 
-            @Override
-            public String toString() {
-                return super.toString() + " '" + mContentView.getText() + "'";
-            }
         }
     }
 }

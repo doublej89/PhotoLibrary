@@ -19,4 +19,6 @@
     <string name="search_instruction">Enter tags seperated with commas to search:</string>
     <string name="tags.search.hint">Tags to search</string>
     <string name="search_button">search</string>
+    <string name="title_photo_list">Photos</string>
+    <string name="title_photo_detail">Photo Detail</string>
 </resources>

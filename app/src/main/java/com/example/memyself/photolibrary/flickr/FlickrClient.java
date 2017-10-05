@@ -40,7 +40,7 @@ public class FlickrClient {
                 HttpUrl url = urlBuilder.build();
                 Log.d("FlickrApi Url", "url: " + url.toString());
 
-                request = request.newBuilder().url(urlBuilder.build()).build();
+                request = request.newBuilder().url(url).build();
                 return chain.proceed(request);
             }
         });
