@@ -1,6 +1,8 @@
 package com.example.memyself.photolibrary;
 
 import android.*;
+import android.support.v4.app.Fragment;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -13,6 +15,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.widget.GridLayoutManager;
@@ -69,6 +72,9 @@ public class MainActivity extends AppCompatActivity
     @BindView(R.id.drawer_layout)
     DrawerLayout drawer;
 
+    @BindView(R.id.photo_list)
+    RecyclerView recyclerView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,11 +113,9 @@ public class MainActivity extends AppCompatActivity
         presenter = new MainPresenterImpl(this, eventBus, model);
         sharedPreferences = getSharedPreferences(LoginActivity.PREF_NAME, MODE_PRIVATE);
 
-        View recyclerView = findViewById(R.id.photo_list);
-        assert recyclerView != null;
         int numberOfColumns = 3;
-        ((RecyclerView) recyclerView).setLayoutManager(new GridLayoutManager(this, numberOfColumns));
-        setupRecyclerView((RecyclerView) recyclerView);
+        recyclerView.setLayoutManager(new GridLayoutManager(this, numberOfColumns));
+        setupRecyclerView(recyclerView);
 
         if (findViewById(R.id.photo_detail_container) != null) {
             // The detail container view will be present only in the
@@ -179,8 +183,14 @@ public class MainActivity extends AppCompatActivity
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
         } else if (id == R.id.nav_inspect_photos) {
-            Intent intent = new Intent(this, SearchActivity.class);
-            startActivity(intent);
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+            Fragment searchFragment = new SearchActivity();
+            transaction.replace(R.id.content_frame, searchFragment);
+            transaction.addToBackStack(null);
+
+            transaction.commit();
+            recyclerView.setAdapter(null);
 
         } else if (id == R.id.nav_share) {
 
